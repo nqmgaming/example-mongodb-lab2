@@ -5,7 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-// var usersRouter = require('./routes/users');
+const database = require('./config/db')
+var apiRouter = require('./routes/api');
 
 var app = express();
 
@@ -20,7 +21,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-// app.use('/users', usersRouter);
+app.use('/', apiRouter);
+database().then(() => {
+  console.log('Connected to the database');
+  //log link
+  console.log('http://localhost:3000/');
+}).catch(error => {
+  console.log('Error connecting to the database');
+  console.log(error);
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
